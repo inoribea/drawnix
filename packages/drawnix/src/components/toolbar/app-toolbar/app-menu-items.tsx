@@ -1,14 +1,27 @@
-import { ExportImageIcon, GithubIcon, OpenFileIcon, SaveFileIcon, TrashIcon } from '../../icons';
+import {
+  ExportImageIcon,
+  GithubIcon,
+  OpenFileIcon,
+  SaveFileIcon,
+  TrashIcon,
+  LinkIcon,
+} from '../../icons';
 import { useBoard, useListRender } from '@plait-board/react-board';
-import { BoardTransforms, PlaitBoard, PlaitElement, PlaitTheme, Viewport } from '@plait/core';
+import {
+  BoardTransforms,
+  PlaitBoard,
+  PlaitElement,
+  PlaitTheme,
+  ThemeColorMode,
+  Viewport,
+} from '@plait/core';
 import { loadFromJSON, saveAsJSON, saveJSON } from '../../../data/json';
 import MenuItem from '../../menu/menu-item';
 import MenuItemLink from '../../menu/menu-item-link';
-import { saveAsPng, saveAsSvg } from '../../../utils/image';
+import { saveAsImage, saveAsSvg } from '../../../utils/image';
 import { useDrawnix } from '../../../hooks/use-drawnix';
 import { useI18n } from '../../../i18n';
 import Menu from '../../menu/menu';
-import MenuItemContentSwitch from '../../menu/menu-item-content-switch';
 import { useContext } from 'react';
 import { MenuContentPropsContext } from '../../menu/common';
 import { EVENT } from '../../../constants';
@@ -35,9 +48,7 @@ export const SaveToFile = () => {
       icon={SaveFileIcon}
       aria-label={t('menu.saveFile')}
       shortcut={getShortcutKey('CtrlOrCmd+S')}
-    >
-      {t('menu.saveFile')}
-    </MenuItem>
+    >{t('menu.saveFile')}</MenuItem>
   );
 };
 SaveToFile.displayName = 'SaveToFile';
@@ -60,9 +71,7 @@ export const SaveAsFile = () => {
       icon={SaveFileIcon}
       aria-label={t('menu.saveAsFile')}
       shortcut={getShortcutKey('CtrlOrCmd+Shift+S')}
-    >
-      {t('menu.saveAsFile')}
-    </MenuItem>
+    >{t('menu.saveAsFile')}</MenuItem>
   );
 };
 SaveAsFile.displayName = 'SaveAsFile';
@@ -72,7 +81,11 @@ export const OpenFile = () => {
   const listRender = useListRender();
   const { setAppState } = useDrawnix();
   const { t } = useI18n();
-  const clearAndLoad = (value: PlaitElement[], viewport?: Viewport, theme?: PlaitTheme) => {
+  const clearAndLoad = (
+    value: PlaitElement[],
+    viewport?: Viewport,
+    theme?: PlaitTheme
+  ) => {
     board.children = value;
     board.viewport = viewport || { zoom: 1 };
     if (theme) {
@@ -99,69 +112,57 @@ export const OpenFile = () => {
       }}
       icon={OpenFileIcon}
       aria-label={t('menu.open')}
-    >
-      {t('menu.open')}
-    </MenuItem>
+    >{t('menu.open')}</MenuItem>
   );
 };
 OpenFile.displayName = 'OpenFile';
 
 export const SaveAsImage = () => {
   const board = useBoard();
-  const { appState, setAppState } = useDrawnix();
   const menuContentProps = useContext(MenuContentPropsContext);
   const { t } = useI18n();
   return (
     <MenuItem
       icon={ExportImageIcon}
       data-testid="image-export-button"
-      onSelect={() => undefined}
+      onSelect={() => {
+        saveAsImage(board, true);
+      }}
       submenu={
-        <Menu
-          onSelect={() => {
-            const itemSelectEvent = new CustomEvent(EVENT.MENU_ITEM_SELECT, {
-              bubbles: true,
-              cancelable: true,
-            });
-            menuContentProps.onSelect?.(itemSelectEvent);
-          }}
-        >
+        <Menu onSelect={() => {
+          const itemSelectEvent = new CustomEvent(EVENT.MENU_ITEM_SELECT, {
+            bubbles: true,
+            cancelable: true,
+          });
+          menuContentProps.onSelect?.(itemSelectEvent);
+        }}>
           <MenuItem
             onSelect={() => {
               saveAsSvg(board);
             }}
             aria-label={t('menu.exportImage.svg')}
-            shortcut={getShortcutKey('CtrlOrCmd+Shift+E')}
           >
             {t('menu.exportImage.svg')}
           </MenuItem>
           <MenuItem
             onSelect={() => {
-              saveAsPng(board);
+              saveAsImage(board, true);
             }}
             aria-label={t('menu.exportImage.png')}
           >
             {t('menu.exportImage.png')}
           </MenuItem>
           <MenuItem
-            onSelect={(event) => {
-              event.preventDefault();
-              setAppState((currentAppState) => ({
-                ...currentAppState,
-                exportTransparent: !currentAppState.exportTransparent,
-              }));
+            onSelect={() => {
+              saveAsImage(board, false);
             }}
-            className="menu-item--setting"
-            role="menuitemcheckbox"
-            aria-checked={appState.exportTransparent}
-            aria-label={t('general.copyToClipboard.transparent')}
+            aria-label={t('menu.exportImage.jpg')}
           >
-            <MenuItemContentSwitch checked={appState.exportTransparent}>
-              {t('general.copyToClipboard.transparent')}
-            </MenuItemContentSwitch>
+            {t('menu.exportImage.jpg')}
           </MenuItem>
         </Menu>
       }
+      shortcut={getShortcutKey('CtrlOrCmd+Shift+E')}
       aria-label={t('menu.exportImage')}
     >
       {t('menu.exportImage')}
@@ -194,13 +195,22 @@ CleanBoard.displayName = 'CleanBoard';
 
 export const Socials = () => {
   return (
-    <MenuItemLink
-      icon={GithubIcon}
-      href="https://github.com/plait-board/drawnix"
-      aria-label="GitHub"
-    >
-      GitHub
-    </MenuItemLink>
+    <>
+      <MenuItemLink
+        icon={LinkIcon}
+        href="https://draw.inoribea.org"
+        aria-label="Excalidraw"
+      >
+        Excalidraw
+      </MenuItemLink>
+      <MenuItemLink
+        icon={GithubIcon}
+        href="https://github.com/inoribea/drawnix"
+        aria-label="GitHub"
+      >
+        Github
+      </MenuItemLink>
+    </>
   );
 };
 Socials.displayName = 'Socials';
