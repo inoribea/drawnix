@@ -117,12 +117,11 @@ export const saveAsSvg = (board: PlaitBoard) => {
   });
 };
 
-export const saveAsPng = (board: PlaitBoard) => {
-  const exportTransparent = !!(board as DrawnixBoard).appState?.exportTransparent;
+export const saveAsImage = (board: PlaitBoard, isTransparent = true) => {
   const selectedElements = getSelectedElements(board);
   getImageBlob(
     board,
-    exportTransparent,
+    isTransparent,
     selectedElements.length > 0 ? selectedElements : undefined
   ).then((imageBlob) => {
     if (imageBlob) {
