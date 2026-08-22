@@ -197,14 +197,14 @@ export const Socials = () => {
   return (
     <>
       <MenuItemLink
-        icon={ImageIcon}
+        icon={LinkIcon}
         href="https://art.inoribea.org"
         aria-label="GeneralAI"
       >
         GeneralAI
       </MenuItemLink>
       <MenuItemLink
-        icon={ShapeIcon}
+        icon={ExportImageIcon}
         href="https://draw.inoribea.org"
         aria-label="Excalidraw"
       >
