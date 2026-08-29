@@ -205,7 +205,7 @@ export const Socials = () => {
       </MenuItemLink>
       <MenuItemLink
         icon={ExportImageIcon}
-        href="https://draw.inoribea.org"
+        href="https://imghub.inoribea.moe"
         aria-label="Excalidraw"
       >
         Excalidraw
