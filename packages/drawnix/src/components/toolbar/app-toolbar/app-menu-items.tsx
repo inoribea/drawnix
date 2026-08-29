@@ -208,7 +208,7 @@ export const Socials = () => {
         href="https://imghub.inoribea.moe"
         aria-label="Excalidraw"
       >
-        Excalidraw
+        Imghub
       </MenuItemLink>
       <MenuItemLink
         icon={GithubIcon}
